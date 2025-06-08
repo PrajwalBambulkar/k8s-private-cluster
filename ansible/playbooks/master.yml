@@ -1,6 +1,31 @@
 ---
-- name: Setup Kubernetes master node
+- name: Initialize Kubernetes Master
   hosts: master
   become: yes
-  roles:
-    - kube-master
+  tasks:
+    - name: Copy kubeadm config
+      copy:
+        src: ../files/kubeadm-config.yaml.j2
+        dest: /home/ubuntu/kubeadm-config.yaml
+
+    - name: Run kubeadm init
+      command: kubeadm init --config=/home/ubuntu/kubeadm-config.yaml
+      register: init_output
+      ignore_errors: true
+
+    - name: Create .kube directory
+      file:
+        path: /home/ubuntu/.kube
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+        mode: '0755'
+
+    - name: Copy admin.conf
+      copy:
+        src: /etc/kubernetes/admin.conf
+        dest: /home/ubuntu/.kube/config
+        remote_src: yes
+        owner: ubuntu
+        group: ubuntu
+        mode: '0644'

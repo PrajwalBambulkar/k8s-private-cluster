@@ -1,0 +1,51 @@
+---
+- name: Install kubeadm, kubelet, kubectl
+  apt:
+    deb: "/home/ubuntu/docker-debs/kubeadm_1.27.0-00_amd64.deb"
+    state: present
+    force: yes
+
+- name: Disable swap (required by Kubernetes)
+  command: swapoff -a
+  when: ansible_swaptotal_mb > 0
+
+- name: Comment out swap in /etc/fstab to disable permanently
+  replace:
+    path: /etc/fstab
+    regexp: '^([^#].*swap)'
+    replace: '#\1'
+
+- name: Enable and start kubelet service
+  systemd:
+    name: kubelet
+    enabled: yes
+    state: started
+
+- name: Initialize Kubernetes master with kubeadm
+  command: >
+    kubeadm init
+    --config=/home/ubuntu/kubeadm-config.yaml
+  args:
+    creates: /etc/kubernetes/admin.conf
+
+- name: Create .kube directory
+  file:
+    path: /home/ubuntu/.kube
+    state: directory
+    owner: ubuntu
+    group: ubuntu
+    mode: '0755'
+
+- name: Copy admin kubeconfig to user's kube config
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: /home/ubuntu/.kube/config
+    remote_src: yes
+    owner: ubuntu
+    group: ubuntu
+    mode: '0644'
+
+- name: Apply Flannel CNI network plugin
+  command: kubectl apply -f /home/ubuntu/flannel.yaml
+  environment:
+    KUBECONFIG: /home/ubuntu/.kube/config

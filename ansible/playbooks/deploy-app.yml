@@ -1,13 +1,17 @@
+---
 - name: Deploy sample application
   hosts: master
-  become: true
+  become: yes
   tasks:
+
+    - name: Copy flannel.yaml to master node
+      copy:
+        src: ../files/flannel.yaml
+        dest: /home/ubuntu/flannel.yaml
+        owner: ubuntu
+        group: ubuntu
+        mode: '0644'
+
     - name: Deploy flannel network plugin
       command: kubectl apply -f /home/ubuntu/flannel.yaml
-      environment:
-        KUBECONFIG: /etc/kubernetes/admin.conf
-
-    - name: Deploy sample Helm chart
-      command: helm install podinfo /home/ubuntu/helm/podinfo-chart.tgz
-      environment:
-        KUBECONFIG: /etc/kubernetes/admin.conf
+      become: false

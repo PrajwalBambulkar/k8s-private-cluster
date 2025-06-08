@@ -1,0 +1,26 @@
+---
+- name: Install kubeadm, kubelet, kubectl
+  apt:
+    deb: "/home/ubuntu/docker-debs/kubeadm_1.27.0-00_amd64.deb"
+    state: present
+    force: yes
+
+- name: Disable swap (required by Kubernetes)
+  command: swapoff -a
+  when: ansible_swaptotal_mb > 0
+
+- name: Comment out swap in /etc/fstab to disable permanently
+  replace:
+    path: /etc/fstab
+    regexp: '^([^#].*swap)'
+    replace: '#\1'
+
+- name: Enable and start kubelet service
+  systemd:
+    name: kubelet
+    enabled: yes
+    state: started
+
+- name: Join node to cluster
+  command: "{{ join_command }}"
+  when: join_command is defined

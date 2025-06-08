@@ -1,0 +1,13 @@
+- name: Deploy sample application
+  hosts: master
+  become: true
+  tasks:
+    - name: Deploy flannel network plugin
+      command: kubectl apply -f /home/ubuntu/flannel.yaml
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf
+
+    - name: Deploy sample Helm chart
+      command: helm install podinfo /home/ubuntu/helm/podinfo-chart.tgz
+      environment:
+        KUBECONFIG: /etc/kubernetes/admin.conf

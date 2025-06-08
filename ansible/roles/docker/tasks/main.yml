@@ -1,0 +1,18 @@
+---
+- name: Install containerd dependency
+  apt:
+    deb: "/home/ubuntu/docker-debs/containerd_1.7.27-0ubuntu1~24.04.1_amd64.deb"
+    state: present
+    force: yes
+
+- name: Install docker.io package
+  apt:
+    deb: "/home/ubuntu/docker-debs/docker.io_27.5.1-0ubuntu3~24.04.2_amd64.deb"
+    state: present
+    force: yes
+
+- name: Ensure docker service is enabled and started
+  systemd:
+    name: docker
+    state: started
+    enabled: true

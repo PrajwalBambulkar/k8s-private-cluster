@@ -6,15 +6,18 @@
     - kube-master
 
   tasks:
-    - name: Copy kubeadm config
-      copy:
+    - name: Copy kubeadm config template
+      template:
         src: ../files/kubeadm-config.yaml.j2
         dest: /home/ubuntu/kubeadm-config.yaml
+        owner: ubuntu
+        group: ubuntu
+        mode: '0644'
 
     - name: Run kubeadm init
       command: kubeadm init --config=/home/ubuntu/kubeadm-config.yaml
       register: init_output
-      ignore_errors: true
+      ignore_errors: yes
 
     - name: Create .kube directory
       file:
@@ -32,3 +35,4 @@
         owner: ubuntu
         group: ubuntu
         mode: '0644'
+      when: init_output.rc == 0

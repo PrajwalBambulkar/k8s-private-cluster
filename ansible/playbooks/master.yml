@@ -2,6 +2,9 @@
 - name: Initialize Kubernetes Master
   hosts: master
   become: yes
+  roles:
+    - kube-master
+
   tasks:
     - name: Copy kubeadm config
       copy:

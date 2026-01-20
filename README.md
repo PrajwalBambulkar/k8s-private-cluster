@@ -2,6 +2,39 @@
 <img width="1643" height="885" alt="image" src="https://github.com/user-attachments/assets/aa872f59-c096-4a98-818b-909356ce8c6e" />
 
 
+## EC2 (Elastic Compute Cloud)
+
+AWS EC2 (Elastic Compute Cloud) is a web service that provides resizable virtual servers, known as instances.
+
+### EC2 Instances
+
+| Name | Public IP | Private IP |
+|------|-----------|------------|
+| `bidd-fe-uat` | N/A | `10.70.11.128` |
+| `bidd-fe-staging` | N/A | `10.80.11.246` |
+| `bidd-fe-prod` | N/A | `10.90.11.92` |
+| `bidd-be-uat` | N/A | `10.70.11.9` |
+| `bidd-be-staging` | N/A | `10.80.11.36` |
+| `bidd-be-prod` | N/A | `10.90.11.182` |
+| `bidd-uat-bastion` | `65.2.33.169` | `10.70.1.36` |
+| `bidd-prod-bastion` | `13.201.66.198` | `10.90.1.30` |
+| `bidd-staging-bastion` | `13.233.197.44` | `10.80.1.115` |
+
+---
+
+## Load Balancer
+
+An AWS Load Balancer (LB) acts as a traffic controller that automatically distributes incoming application requests across multiple EC2 instances to prevent any single server from overloading. It ensures high availability by redirecting traffic away from unhealthy servers to those that are working correctly.
+
+### Load Balancer Configuration
+
+| Name | VPC ID | Security Group | DNS Name |
+|------|--------|----------------|----------|
+| `bidd-uat` | `vpc-0b1f4a3ecc95086e2` | `sg-00c0211b331681f00` | `bidd-uat-874321850.ap-south-1.elb.amazonaws.com` |
+| `bidd-staging` | `vpc-01aa775625bdbc866` | `sg-0c6a42a3a92d28043` | `bidd-staging-577559865.ap-south-1.elb.amazonaws.com` |
+| `bidd-prod` | `vpc-0ba146c7ffff6ddf4` | `sg-00ae433905f817a9a` | `bidd-prod-1822383629.ap-south-1.elb.amazonaws.com` |
+
+---
 ## VPC (Virtual Private Cloud)
 
 A VPC (Virtual Private Cloud) is a logically isolated private network in AWS where you can launch and manage resources securely. It allows you to define your own IP range, subnets, routing, and security controls.
@@ -762,6 +795,7 @@ For detailed deployment procedures, refer to the deployment documentation:
 [Biddeasy Deployment Guide](https://docs.google.com/document/d/1mI7rtrBRfdnXjAsPhYxab5b_PSiQaJKeoLYakEdSiVY/edit?usp=sharing)
 
 ---
+
 
 
 
